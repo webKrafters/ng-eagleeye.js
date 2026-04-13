@@ -1,0 +1,95 @@
+{
+  "alias": "Angular Eagle Eye",
+  "author": "Stephen Isienyi <stephen.isienyi@webkrafting.com>",
+  "bugs": {
+    "url": "https://github.com/webKrafters/ng-eagleeye.js/issues"
+  },
+  "contributors": [
+    "steveswork <stephen.isienyi@gmail.com> (https://github.com/steveswork)"
+  ],
+  "files": [
+    "logo.png",
+    "dist"
+  ],
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "description": "Angular Eagle Eye - Reactive Streamable Observable Auto-Immutable Update-friendly State Management System for Angular 16+. Maintaining application wide state made easy.",
+  "devDependencies": {
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@webkrafters/clone-total": ">= 1.0.1",
+    "@webkrafters/eagleeye": ">= 1.0.5",
+    "@webkrafters/get-property": ">= 1.0.1",
+    "@webkrafters/path-dotize": ">= 0.0.2",
+    "@webkrafters/timed-map": "^2.0.0",
+    "lodash.clonedeep": ">= 0.1.0",
+    "lodash.clonedeepwith": ">= 0.1.0",
+    "lodash.isboolean": ">= 0.1.0",
+    "lodash.isempty": ">= 0.1.0",
+    "lodash.isequal": ">= 0.1.0",
+    "lodash.isinteger": ">= 0.1.0",
+    "lodash.isobject": ">= 0.1.0",
+    "lodash.isplainobject": ">= 0.8.0",
+    "lodash.omit": ">= 0.1.0"
+  },
+  "homepage": "https://ng-eagleeye.js.org",
+  "keywords": [
+    "connect",
+    "context",
+    "eagle eye",
+    "angular eagle eye",
+    "ng eagle eye",
+    "eagleeye",
+    "angular-eagleeye",
+    "ng-eagleeye",
+    "eagleeye service",
+    "observable",
+    "observable context",
+    "angular state",
+    "ng state",
+    "angular context",
+    "ng context",
+    "angular observable conttext",
+    "state",
+    "state management",
+    "state manager",
+    "angular useContext",
+    "ng useContext",
+    "angular useStream",
+    "ng useStream",
+    "stream",
+    "change stream"
+  ],
+  "license": "GPL-3.0-only",
+  "main": "dist/index.js",
+  "name": "@webkrafters/ng-eagleeye",
+  "peerDependencies": {
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@webkrafters/clone-total": ">= 1.0.1",
+    "@webkrafters/eagleeye": ">= 1.0.5",
+    "@webkrafters/get-property": ">= 1.0.1",
+    "@webkrafters/path-dotize": ">= 0.0.2",
+    "@webkrafters/timed-map": "^2.0.0",
+    "lodash.clonedeep": ">= 0.1.0",
+    "lodash.clonedeepwith": ">= 0.1.0",
+    "lodash.isboolean": ">= 0.1.0",
+    "lodash.isempty": ">= 0.1.0",
+    "lodash.isequal": ">= 0.1.0",
+    "lodash.isinteger": ">= 0.1.0",
+    "lodash.isobject": ">= 0.1.0",
+    "lodash.isplainobject": ">= 0.8.0",
+    "lodash.omit": ">= 0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
+  },
+  "sideEffects": false,
+  "version": "0.0.1-beta.0"
+}
