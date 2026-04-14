@@ -6,7 +6,7 @@ export default defineConfig({
       codeCoverage: true,
       enabled: true,
 			provider: 'v8', // or 'istanbul' or 'custom',
-			reporter: [ 'text', 'lcov' ]
+			reporter: [ 'text', 'lcov', 'json-summary' ]
     }
 	}
 });
