@@ -5,7 +5,7 @@ export default defineConfig({
 		coverage: {
       codeCoverage: true,
       enabled: true,
-			provider: 'istanbul', // or 'v8' or 'custom',
+			provider: 'v8', // or 'istanbul' or 'custom',
 			reporter: [ 'text', 'lcov' ]
     }
 	}
