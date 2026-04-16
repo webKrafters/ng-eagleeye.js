@@ -1,6 +1,6 @@
 {
   "alias": "Angular Eagle Eye",
-  "author": "Stephen Isienyi <stephen.isienyi@webkrafting.com>",
+  "author": "Stephen Isienyi <stephen.isienyi@webkrafters.tech>",
   "bugs": {
     "url": "https://github.com/webKrafters/ng-eagleeye.js/issues"
   },
@@ -67,7 +67,7 @@
   },
   "scripts": {
     "build": "ng build --configuration production",
-    "build-dev": "ng build --configuration production"
+    "build-dev": "ng build --configuration development"
   },
   "repository": {
     "type": "git",
