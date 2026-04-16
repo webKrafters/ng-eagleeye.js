@@ -19,6 +19,8 @@
 
 # Angular Eagle Eye
 
+In development.
+
 # License
 
 GPLv3
