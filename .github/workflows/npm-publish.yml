@@ -19,7 +19,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: cd projects/npm-pkg
       - run: npm install --legacy-peer-deps
-      - run: npm run build npm-pkg --configuration production
+      - run: npm run build npm-pkg --prod
       - run: npm publish ./dist/npm-pkg --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_RELEASE_CLI_0 }}
