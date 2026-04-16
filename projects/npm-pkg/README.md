@@ -1,6 +1,6 @@
-<p align="center">
+<!-- <p align="center">
    <img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
-</p>s
+</p> -->
 <p align="center">
    <a href="https://typescriptlang.org">
       <img alt="TypeScript" src="https://badgen.net/badge/icon/typescript?icon=typescript&label">
