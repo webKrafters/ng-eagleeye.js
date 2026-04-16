@@ -1,6 +1,3 @@
-<!-- <p align="center">
-   <img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
-</p> -->
 <p align="center">
    <a href="https://typescriptlang.org">
       <img alt="TypeScript" src="https://badgen.net/badge/icon/typescript?icon=typescript&label">
@@ -21,6 +18,37 @@
 </p>
 
 # Angular Eagle Eye
+
+# License
+
+GPLv3
+
+
+<!-- <p align="center">
+   <img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
+</p>
+<p align="center">
+   <a href="https://typescriptlang.org">
+      <img alt="TypeScript" src="https://badgen.net/badge/icon/typescript?icon=typescript&label">
+   </a>
+   <a href="https://github.com/webKrafters/ng-eagleeye.js/actions">
+      <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/webKrafters/ng-eagleeye.js/test.yml">
+   </a>
+   <a href="https://coveralls.io/github/webKrafters/ng-eagleeye.js">
+      <img alt="coverage" src="https://img.shields.io/coveralls/github/webKrafters/ng-eagleeye.js">
+   </a>
+   <img alt="NPM" src="https://img.shields.io/npm/l/@webkrafters/ng-eagleeye">
+   <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2032">
+   <img alt="build size" src="https://img.shields.io/bundlephobia/minzip/@webkrafters/ng-eagleeye?label=bundle%20size">
+   <a href="https://www.npmjs.com/package/@webKrafters/ng-eagleeye">
+      <img alt="Downloads" src="https://img.shields.io/npm/dt/@webkrafters/ng-eagleeye.svg">
+   </a>
+   <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/webKrafters/ng-eagleeye.js">
+</p>
+
+# Angular Eagle Eye
+
+<p>In development.</p>
 
 <table BORDER-COLOR="0a0" BORDER-WIDTH="2">
     <td VALIGN="middle" ALIGN="center" FONT-WEIGHT="BOLD" COLOR="#333" HEIGHT="250px" width="1250px">
@@ -55,4 +83,4 @@ Full Documentation: **[ng-eagleeye.js.org](https://ng-eagleeye.js.org)**
 
 # License
 
-GPLv3
+GPLv3 -->
