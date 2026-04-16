@@ -65,10 +65,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "scripts": {
-    "build": "ng build --configuration production",
-    "build-dev": "ng build --configuration development"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
