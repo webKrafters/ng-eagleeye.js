@@ -8,8 +8,7 @@
     "steveswork <stephen.isienyi@gmail.com> (https://github.com/steveswork)"
   ],
   "files": [
-    "logo.png",
-    "dist"
+    "logo.png"
   ],
   "dependencies": {
     "tslib": "^2.3.0"
@@ -44,7 +43,6 @@
     "change stream"
   ],
   "license": "GPL-3.0-only",
-  "main": "dist/index.js",
   "name": "@webkrafters/ng-eagleeye",
   "peerDependencies": {
     "@angular/common": "^21.2.0",
@@ -67,7 +65,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "ng build --configuration production",
+    "build-dev": "ng build --configuration production"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
