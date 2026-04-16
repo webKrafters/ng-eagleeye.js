@@ -1,5 +1,5 @@
 <p align="center">
-   <img alt="Eagle Eye" height="150px" src="logo___OLD.png" width="250px" />
+   <img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
 </p>s
 <p align="center">
    <a href="https://typescriptlang.org">
