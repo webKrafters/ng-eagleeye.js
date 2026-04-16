@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: cd projects/ng-eagleeye.js
+      - run: cd projects/npm-pkg
       - run: npm install --legacy-peer-deps
       - run: npm run build
       - run: npm publish --access public
