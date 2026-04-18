@@ -7,9 +7,6 @@
   "contributors": [
     "steveswork <stephen.isienyi@gmail.com> (https://github.com/steveswork)"
   ],
-  "files": [
-    "logo.png"
-  ],
   "dependencies": {
     "tslib": "^2.3.0"
   },
@@ -70,6 +67,6 @@
     "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
   },
   "sideEffects": false,
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
 

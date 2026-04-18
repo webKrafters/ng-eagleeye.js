@@ -17,7 +17,6 @@ jobs:
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: cd projects/npm-pkg
       - run: npm install --legacy-peer-deps
       - run: npm run build npm-pkg --prod
       - run: npm publish ./dist/npm-pkg --access public
