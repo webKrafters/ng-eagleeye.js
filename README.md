@@ -1,5 +1,5 @@
 <p align="center">
-	<img alt="Eagle Eye" height="150px" src="./projects/npm-pkg/logo.png" width="250px" />
+	<img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
 </p>
 s
 # Angular Eagle Eye
