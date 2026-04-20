@@ -4,8 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "postbuild": "cp ./logo.png ./dist/npm-pkg/",
+    "build": "rm -rf ./dist && ng build",
+    "dp-lic": "cp ./LICENSE ./dist/npm-pkg/",
+    "dp-logo": "cp ./logo.png ./dist/npm-pkg/",
+    "dp-readme": "cp ./README.md ./dist/npm-pkg/",
+    "postbuild": "npm run dp-lic && npm run dp-logo && npm run dp-readme",
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:core -- --coverage",
     "test:clean": "jest --clearCache",
