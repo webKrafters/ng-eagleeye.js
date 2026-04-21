@@ -130,7 +130,7 @@ export function createStreamService<
 export function provideStreamService<
   T extends State, S extends SelectorMap
 >(
-  config : StreamServiceConfig<T, S>
+  config? : StreamServiceConfig<T, S>
 ) : Array<Provider> {
   if( !config ) {
     return [{
