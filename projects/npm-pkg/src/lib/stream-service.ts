@@ -29,7 +29,7 @@ export interface StreamServiceConfig<
   T extends State,
   S extends SelectorMap
 >{
-  contextRef : InjectionToken<ContextService<T>>;
+  contextRef? : InjectionToken<ContextService<T>>;
   ref? : InjectionToken<StreamService<T,S>>;
   selectorMap? : S;
 }
@@ -123,14 +123,13 @@ export function createStreamService<
   S extends SelectorMap
 >( config : StreamServiceConfig<T, S> ) {
   return new StreamService(
-    inject( config.contextRef ),
+    inject( config.contextRef ?? ContextService ),
     config.selectorMap
   );
 }
 
 export function provideStreamService<
-  T extends State,
-  S extends SelectorMap
+  T extends State, S extends SelectorMap
 >(
   config : StreamServiceConfig<T, S>
 ) : Array<Provider> {

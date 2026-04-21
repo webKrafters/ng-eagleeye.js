@@ -2,7 +2,8 @@ import {
   DestroyRef,
   inject,
   InjectionToken,
-  Provider
+  Provider,
+  Type
 } from '@angular/core';
 
 import {
