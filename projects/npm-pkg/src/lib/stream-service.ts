@@ -81,8 +81,8 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  * {myData: '@@STATE'} => {myData: state}
  */
 export class StreamService<
-  T extends State,
-  S extends SelectorMap
+  T extends State = State,
+  S extends SelectorMap = void
 > {
 
   private _data = {} as Data<S>;
