@@ -119,9 +119,8 @@ export class StreamService<
 }
 
 export function createStreamService<
-  T extends State,
-  S extends SelectorMap
->( config : StreamServiceConfig<T, S> ) {
+  T extends State, S extends SelectorMap
+>( config : StreamServiceConfig<T, S> = {} ) {
   return new StreamService(
     inject( config.contextRef ?? ContextService ),
     config.selectorMap
@@ -133,11 +132,15 @@ export function provideStreamService<
 >(
   config : StreamServiceConfig<T, S>
 ) : Array<Provider> {
+  if( !config ) {
+    return [{
+      provide: StreamService,
+      useFactory: createStreamService
+    }];
+  }
   validateRef( STREAM_DESCRIPTOR, config.ref );
   const STREAM_SVC_CONFIG = new InjectionToken<
-    StreamData<
-      ContextService<T>
-    >
+    StreamData<ContextService<T>>
   >( `${ config.ref ?? STREAM_DESCRIPTOR }_Config` );
   return [{
     provide: STREAM_SVC_CONFIG,
@@ -148,4 +151,3 @@ export function provideStreamService<
     useFactory: createStreamService
   }];
 }
-
