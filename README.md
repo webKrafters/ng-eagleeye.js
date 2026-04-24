@@ -22,7 +22,20 @@
 
 # Angular Eagle Eye
 
-In development.
+In development -- alpha testing phase.
+
+**Install:**\
+npm install --save @webkrafters/ng-eagleeye
+
+**Demo:** [Play with the app on codesandbox](https://codesandbox.io/s/github/webKrafters/ng-eagleeye-app)\
+If sandbox fails to load app, please clone and run the demo repo as follows.
+<ol>
+  <li>open your command line interface in your local machine.</li>
+  <li>run <code>git clone https://github.com/webKrafters/ng-eagleeye-app.git</code></li>
+  <li>run <code>cd ng-eagleeye-app</code></li>
+  <li>run <code>npm install && npm run dev</code></li>
+  <li>open the URL displayed at then of this script run.</li>
+</ol>
 
 # License
 
