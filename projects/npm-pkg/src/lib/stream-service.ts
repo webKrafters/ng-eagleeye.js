@@ -3,6 +3,7 @@ import {
   inject,
   InjectionToken,
   Provider,
+  Signal,
   signal,
   WritableSignal
 } from '@angular/core';
@@ -18,10 +19,13 @@ import {
 
 import {
   __INTERNAL__,
-  ContextService
+  ContextService,
+  createContextService
 } from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
+import createSourceData from './test-artifacts/data/create-state-obj';
+import createEagleEye from '@webkrafters/eagleeye';
 
 export type StreamData<C> = C extends ContextService<infer U> ? C : never;
 
@@ -34,12 +38,20 @@ export interface StreamServiceConfig<
   selectorMap? : S;
 }
 
-export type Data<S extends SelectorMap> =
+type SignalContent<S> = S extends Signal<infer C> ? C : S;
+
+export type DataShape<S extends SelectorMap> = 
   S extends ObjectSelector
-  ? { [K in keyof S]: WritableSignal<unknown> }
+  ? { [ K in keyof S ]: any }
   : S extends ArraySelector
-  ?  Array<WritableSignal<unknown>>
-  : never;
+  ? Record<number, any>
+  : Record<string, any>
+
+export type Data<
+  S extends SelectorMap = SelectorMap,
+  D extends DataShape<S> = DataShape<S>
+> = { [ K in keyof D ]: WritableSignal<SignalContent<D[ K ]>> }
+  
 
 export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
 
@@ -82,10 +94,11 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  */
 export class StreamService<
   T extends State = State,
-  S extends SelectorMap = void
+  S extends SelectorMap = void,
+  U extends DataShape<S> = DataShape<S>
 > {
 
-  private _data = {} as Data<S>;
+  private _data = {} as Data<S, U>;
 
   private channel : Channel<T, S>;
 
@@ -98,7 +111,9 @@ export class StreamService<
     this.channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
     this.destroyRef.onDestroy(() => this.channel.endStream());
     const tData = this.channel.data as Record<number, unknown>;
-    for( let k in tData ) { this._data[ k ] = signal( tData[ k ] ) }
+    for( let k in tData ) {
+      ( this._data as any )[ k ] = signal( tData[ k ] );
+    }
     this.channel.addListener( 'data-changed', () => this.refreshData() );
   }
 
@@ -110,10 +125,11 @@ export class StreamService<
 	setState( changes: Changes<T> ) { this.channel.setState( changes ) }
 
   private refreshData() {
-    const tData = this.channel.data as Record<number, any>;
+    const tData = this.channel.data;
+    const _data = this._data as any;
     for( let k in tData ) {
-      this._data[ k ]() !== tData[ k ] &&
-      this._data[ k ].set( tData[ k ] );
+      _data[ k ]() !== tData[ k ] &&
+      _data[ k ].set( tData[ k ] );
     }
   }
 }
