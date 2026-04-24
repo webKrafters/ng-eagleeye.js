@@ -19,13 +19,10 @@ import {
 
 import {
   __INTERNAL__,
-  ContextService,
-  createContextService
+  ContextService
 } from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
-import createSourceData from './test-artifacts/data/create-state-obj';
-import createEagleEye from '@webkrafters/eagleeye';
 
 export type StreamData<C> = C extends ContextService<infer U> ? C : never;
 
