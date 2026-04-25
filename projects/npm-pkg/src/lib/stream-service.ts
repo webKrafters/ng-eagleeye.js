@@ -35,20 +35,57 @@ export interface StreamServiceConfig<
   selectorMap? : S;
 }
 
-type SignalContent<S> = S extends Signal<infer C> ? C : S;
+type Replace<
+  P extends string,
+  S extends string,
+  R extends string
+> = P extends `${infer K}${S}${infer PP}`
+  ? `${K}${R}${Replace<PP, S, R>}`
+  : P;
 
-export type DataShape<S extends SelectorMap> = 
-  S extends ObjectSelector
-  ? { [ K in keyof S ]: any }
+type DotizedPath<
+  P extends string
+> = Replace<Replace<Replace<Replace<P, ']', '.'>, '[', '.'>, '..', '.'>, '...', '.'>;
+
+type DrillType<
+  T extends Record<any, any>,
+  P extends string
+> = P extends `${infer K}.${infer R}`
+  ? T[K] extends {}
+    ? DrillType<T[K], R>
+    : any
+  : T[P];
+
+type ExtricateTypeFrom<
+  T extends State,
+  P extends string
+> = DrillType<T, DotizedPath<P>>;
+
+export type DataShape<
+  T extends State,
+  S extends SelectorMap
+> = S extends ObjectSelector
+  ? {
+    [K in keyof S]: S[K] extends string
+      ? ExtricateTypeFrom<T, S[K]>
+      : S[K] extends keyof T
+      ? T[S[K]]
+      : any
+  }
   : S extends ArraySelector
   ? Record<number, any>
-  : Record<string, any>
+  : Record<any, any>;
+
+type ToSignal<
+  T extends State,
+  S extends SelectorMap,
+  D extends DataShape<T, S>
+> = { [ K in keyof D ]: WritableSignal<D[K]> }
 
 export type Data<
-  S extends SelectorMap = SelectorMap,
-  D extends DataShape<S> = DataShape<S>
-> = { [ K in keyof D ]: WritableSignal<SignalContent<D[ K ]>> }
-  
+  T extends State = State,
+  S extends SelectorMap = SelectorMap
+> = ToSignal<T, S, DataShape<T, S>>
 
 export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
 
@@ -91,11 +128,10 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  */
 export class StreamService<
   T extends State = State,
-  S extends SelectorMap = void,
-  U extends DataShape<S> = DataShape<S>
+  const S extends SelectorMap = void
 > {
 
-  private _data = {} as Data<S, U>;
+  private _data = {} as Data<T, S>;
 
   private channel : Channel<T, S>;
 
