@@ -19,10 +19,13 @@ import {
 
 import {
   __INTERNAL__,
-  ContextService
+  ContextService,
+  createContextService
 } from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
+import createSourceData from './test-artifacts/data/create-state-obj';
+import createEagleEye from '@webkrafters/eagleeye';
 
 export type StreamData<C> = C extends ContextService<infer U> ? C : never;
 
@@ -167,6 +170,7 @@ export class StreamService<
   }
 }
 
+
 export function createStreamService<
   T extends State, S extends SelectorMap
 >( config : StreamServiceConfig<T, S> = {} ) {
@@ -177,10 +181,15 @@ export function createStreamService<
 }
 
 export function provideStreamService<
-  T extends State, S extends SelectorMap
->(
-  config? : StreamServiceConfig<T, S>
-) : Array<Provider> {
+  T extends State
+>( config : never ) : Array<Provider>;
+export function provideStreamService<
+  T extends State,
+  S extends SelectorMap
+>( config : StreamServiceConfig<T, S> ) : Array<Provider>;
+export function provideStreamService<
+ T extends State
+>( config : any ) : Array<Provider> {
   if( !config ) {
     return [{
       provide: StreamService,
