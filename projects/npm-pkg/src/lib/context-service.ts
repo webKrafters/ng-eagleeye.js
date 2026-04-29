@@ -2,8 +2,7 @@ import {
   DestroyRef,
   inject,
   InjectionToken,
-  Provider,
-  Type
+  Provider
 } from '@angular/core';
 
 import {
@@ -98,7 +97,7 @@ export function provideContextService<T extends State>(
     useValue: config
   }, {
     deps: [ CTX_SVC_CONFIG ],
-    provide: config?.ref ?? ContextService,
+    provide: config.ref ?? ContextService,
     useFactory: createContextService
   }];
 }

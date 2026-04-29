@@ -3,31 +3,36 @@ import {
   inject,
   InjectionToken,
   Provider,
-  Signal,
   signal,
   WritableSignal
 } from '@angular/core';
 
+import { Data } from '@webkrafters/eagleeye';
+
 import {
-  ArraySelector,
   Changes,
   Channel,
-  ObjectSelector,
   SelectorMap,
   State
 } from '.';
 
-import {
-  __INTERNAL__,
-  ContextService,
-  createContextService
-} from './context-service';
+import { __INTERNAL__, ContextService } from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
-import createSourceData from './test-artifacts/data/create-state-obj';
-import createEagleEye from '@webkrafters/eagleeye';
 
 export type StreamData<C> = C extends ContextService<infer U> ? C : never;
+
+type SignalGen<
+  T extends State,
+  S extends SelectorMap,
+  D extends Data<S, T> = Data<S, T>
+> = {
+  [ K in keyof D ]: WritableSignal<D[K]>
+};
+export type DataSignals<
+  T extends State,
+  S extends SelectorMap
+> = SignalGen<T, S>;
 
 export interface StreamServiceConfig<
   T extends State,
@@ -37,58 +42,6 @@ export interface StreamServiceConfig<
   ref? : InjectionToken<StreamService<T,S>>;
   selectorMap? : S;
 }
-
-type Replace<
-  P extends string,
-  S extends string,
-  R extends string
-> = P extends `${infer K}${S}${infer PP}`
-  ? `${K}${R}${Replace<PP, S, R>}`
-  : P;
-
-type DotizedPath<
-  P extends string
-> = Replace<Replace<Replace<Replace<P, ']', '.'>, '[', '.'>, '..', '.'>, '...', '.'>;
-
-type DrillType<
-  T extends Record<any, any>,
-  P extends string
-> = P extends `${infer K}.${infer R}`
-  ? T[K] extends {}
-    ? DrillType<T[K], R>
-    : any
-  : T[P];
-
-type ExtricateTypeFrom<
-  T extends State,
-  P extends string
-> = DrillType<T, DotizedPath<P>>;
-
-export type DataShape<
-  T extends State,
-  S extends SelectorMap
-> = S extends ObjectSelector
-  ? {
-    [K in keyof S]: S[K] extends string
-      ? ExtricateTypeFrom<T, S[K]>
-      : S[K] extends keyof T
-      ? T[S[K]]
-      : any
-  }
-  : S extends ArraySelector
-  ? Record<number, any>
-  : Record<any, any>;
-
-type ToSignal<
-  T extends State,
-  S extends SelectorMap,
-  D extends DataShape<T, S>
-> = { [ K in keyof D ]: WritableSignal<D[K]> }
-
-export type Data<
-  T extends State = State,
-  S extends SelectorMap = SelectorMap
-> = ToSignal<T, S, DataShape<T, S>>
 
 export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
 
@@ -131,25 +84,26 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  */
 export class StreamService<
   T extends State = State,
-  const S extends SelectorMap = void
+  const S extends SelectorMap = undefined
 > {
 
-  private _data = {} as Data<T, S>;
+  private _data = {} as DataSignals<T, S>;
 
   private channel : Channel<T, S>;
 
   private destroyRef = inject( DestroyRef );
-  
   constructor(
     contextSvc : ContextService<T>,
     selectorMap? : S
   ) {
     this.channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
     this.destroyRef.onDestroy(() => this.channel.endStream());
-    const tData = this.channel.data as Record<number, unknown>;
+    const tData = this.channel.data;
+    const _data = { ...this._data } as typeof tData;
     for( let k in tData ) {
-      ( this._data as any )[ k ] = signal( tData[ k ] );
+      _data[ k ] = signal( tData[ k ] ) as Data<S, T>[Extract<keyof Data<S, T>, string>];
     }
+    this._data = _data as DataSignals<T, S>;
     this.channel.addListener( 'data-changed', () => this.refreshData() );
   }
 
@@ -162,17 +116,16 @@ export class StreamService<
 
   private refreshData() {
     const tData = this.channel.data;
-    const _data = this._data as any;
     for( let k in tData ) {
-      _data[ k ]() !== tData[ k ] &&
-      _data[ k ].set( tData[ k ] );
+      this._data[ k ]() !== tData[ k ] &&
+      this._data[ k ].set( tData[ k ] );
     }
   }
 }
 
-
 export function createStreamService<
-  T extends State, S extends SelectorMap
+  T extends State,
+  const S extends SelectorMap
 >( config : StreamServiceConfig<T, S> = {} ) {
   return new StreamService(
     inject( config.contextRef ?? ContextService ),
@@ -181,15 +134,11 @@ export function createStreamService<
 }
 
 export function provideStreamService<
-  T extends State
->( config : never ) : Array<Provider>;
-export function provideStreamService<
   T extends State,
-  S extends SelectorMap
->( config : StreamServiceConfig<T, S> ) : Array<Provider>;
-export function provideStreamService<
- T extends State
->( config : any ) : Array<Provider> {
+  const S extends SelectorMap
+>(
+  config? : StreamServiceConfig<T, S>
+) : Array<Provider> {
   if( !config ) {
     return [{
       provide: StreamService,

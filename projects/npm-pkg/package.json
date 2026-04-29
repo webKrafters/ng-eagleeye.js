@@ -45,7 +45,7 @@
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@webkrafters/clone-total": ">= 1.0.1",
-    "@webkrafters/eagleeye": ">= 1.0.5",
+    "@webkrafters/eagleeye": ">= 1.0.6",
     "@webkrafters/get-property": ">= 1.0.1",
     "@webkrafters/path-dotize": ">= 0.0.2",
     "@webkrafters/timed-map": "^2.0.0",
@@ -67,6 +67,5 @@
     "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
   },
   "sideEffects": false,
-  "version": "1.0.0-alpha.2"
+  "version": "1.0.0-alpha.3"
 }
-

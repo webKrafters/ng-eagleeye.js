@@ -29,7 +29,7 @@ describe( 'StreamService', () => {
 
 	const eeContextService = new InjectionToken<ContextService<SourceData>>( 'EagleEye_Context_Service_Test' );
 
-	beforeEach(() => {	
+	beforeEach(() => {
 		TestBed.configureTestingModule({
 			providers: [
 				provideContextService({
