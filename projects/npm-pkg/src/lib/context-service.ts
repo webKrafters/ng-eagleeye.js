@@ -27,21 +27,18 @@ export type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<i
 export const CONTEXT_DESCRIPTOR = 'EagleEye_Context_Service';
 
 export interface ContextServiceConfig<T extends State>{
-  attrs : ProviderProps<T>|RawProviderProps<T>;
+  attrs? : ProviderProps<T>|RawProviderProps<T>;
   ref? : InjectionToken<ContextService<T>>;
 }
 
-export class ContextService<T extends State = State> {
+export class Context<T extends State = State> {
   
   private consumer : EagleEyeContext<T>;
-
-  private destroyRef = inject( DestroyRef );
   
   constructor( config? : ProviderProps<T> );
   constructor( config? : RawProviderProps<T> );
   constructor( config? : any ) {
     this.consumer = createEagleEye( config );
-    this.destroyRef.onDestroy(() => this.dispose());
   }
 
 	get cache(){ return this.consumer.cache }
@@ -71,6 +68,19 @@ export class ContextService<T extends State = State> {
     return this.consumer.stream;
   }
 
+}
+
+export class ContextService<T extends State = State> extends Context<T> {
+
+  private destroyRef = inject( DestroyRef );
+
+  constructor( config? : ProviderProps<T> );
+  constructor( config? : RawProviderProps<T> );
+  constructor( config? : any ) {
+    super( config );
+    this.destroyRef.onDestroy(() => this.dispose());
+  }
+  
 }
 
 export function createContextService<T extends State>(

@@ -82,45 +82,61 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  * {myX: 'd.e.f[1].x'} or {myX: 'd.e.f.1.x'} => {myX: 7} // same applies to {myY: 'd.e.f[1].y'} = {myY: 8}; {myZ: 'd.e.f[1].z'} = {myZ: 9}
  * {myData: '@@STATE'} => {myData: state}
  */
-export class StreamService<
+export class Stream<
   T extends State = State,
   const S extends SelectorMap = undefined
 > {
 
   private _data = {} as DataSignals<T, S>;
 
-  private channel : Channel<T, S>;
+  private _channel : Channel<T, S>;
+
+  constructor(
+    contextSvc : ContextService<T>,
+    selectorMap? : S
+  ) {
+    this._channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
+    const tData = this._channel.data;
+    const _data = { ...this._data } as typeof tData;
+    for( let k in tData ) {
+      _data[ k ] = signal( tData[ k ] ) as Data<S, T>[Extract<keyof Data<S, T>, string>];
+    }
+    this._data = _data as DataSignals<T, S>;
+    this._channel.addListener( 'data-changed', () => this.refreshData() );
+  }
+
+  protected get channel() { return this._channel }
+
+  get data() { return this._data }
+
+  /** @param {string[]} [propertyPaths] - Array of object paths to a state slice e.g. [ 'a.b[3]', 'a.e.2.e', 'x.y.z' ] */
+  resetState( propertyPaths? : Array<string> ) { this._channel.resetState( propertyPaths ) }
+
+	setState( changes: Changes<T> ) { this._channel.setState( changes ) }
+
+  private refreshData() {
+    const tData = this._channel.data;
+    for( let k in tData ) {
+      this._data[ k ]() !== tData[ k ] &&
+      this._data[ k ].set( tData[ k ] );
+    }
+  }
+}
+
+export class StreamService<
+  T extends State = State,
+  const S extends SelectorMap = undefined
+> extends Stream<T, S> {
 
   private destroyRef = inject( DestroyRef );
   constructor(
     contextSvc : ContextService<T>,
     selectorMap? : S
   ) {
-    this.channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
+    super( contextSvc, selectorMap );
     this.destroyRef.onDestroy(() => this.channel.endStream());
-    const tData = this.channel.data;
-    const _data = { ...this._data } as typeof tData;
-    for( let k in tData ) {
-      _data[ k ] = signal( tData[ k ] ) as Data<S, T>[Extract<keyof Data<S, T>, string>];
-    }
-    this._data = _data as DataSignals<T, S>;
-    this.channel.addListener( 'data-changed', () => this.refreshData() );
   }
 
-  get data() { return this._data }
-
-  /** @param {string[]} [propertyPaths] - Array of object paths to a state slice e.g. [ 'a.b[3]', 'a.e.2.e', 'x.y.z' ] */
-  resetState( propertyPaths? : Array<string> ) { this.channel.resetState( propertyPaths ) }
-
-	setState( changes: Changes<T> ) { this.channel.setState( changes ) }
-
-  private refreshData() {
-    const tData = this.channel.data;
-    for( let k in tData ) {
-      this._data[ k ]() !== tData[ k ] &&
-      this._data[ k ].set( tData[ k ] );
-    }
-  }
 }
 
 export function createStreamService<

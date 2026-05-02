@@ -9,5 +9,13 @@ export {
 	ContextService,
 	createContextService,
 	provideContextService
-}from './lib/context-service';
-export * from './lib/stream-service';
+} from './lib/context-service';
+export {
+	type DataSignals,
+	type StreamData,
+	STREAM_DESCRIPTOR,
+	type StreamServiceConfig,
+	StreamService,
+	createStreamService,
+	provideStreamService
+} from './lib/stream-service';
