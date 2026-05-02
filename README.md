@@ -22,7 +22,7 @@
 
 # Angular Eagle Eye
 
-In development -- alpha testing phase.
+In official releaase candidature phase -- pending documentation completion.
 
 **Install:**\
 npm install --save @webkrafters/ng-eagleeye
