@@ -26,7 +26,7 @@
 	<li> Ready for use anywhere in the app as needed.</li>
 	<li> Streams present as stream service where properties are automatically UI render ready  <a href="https://ng-eagleeye.js.org/serivce/stream"><code>Stream Service</code></a> API.</li>
 	<li> Auto-immutable update-friendly context. See <a href="https://ng-eagleeye.js.org/concepts/stream/setstate"><code>stream.setState</code></a>.</li>
-	<li> A context bearing an observable consumer <a href="https://ng-eagleeye.js.org/concepts/stream">strea,m</a>.</li>
+	<li> A context bearing an observable consumer <a href="https://ng-eagleeye.js.org/concepts/stream">stream</a>.</li>
 	<li> Recognizes <b>negative array indexing</b>. Please see <a href="https://ng-eagleeye.js.org/concepts/property-path">Property Path</a> and <code>store.setState</code> <a href="https://react-eagleeye.js.org/concepts/store/setstate#indexing">Indexing</a>.</li>
 	<li> Only updates subscribing components (<a href="https://ng-eagleeye.js.org/concepts/client">clients</a>) on context state changes.</li>
 	<li> Subscribing component decides which context state properties' changes to trigger its update.</li>
