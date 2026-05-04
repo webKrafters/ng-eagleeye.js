@@ -15,8 +15,9 @@ import {
 import createSourceData, {
 	SourceData
 } from './test-artifacts/data/create-state-obj';
-import { Changes, DELETE_TAG, FULL_STATE_SELECTOR, MOVE_TAG, SelectorMap, State } from '@webkrafters/eagleeye';
+import { Changes, DELETE_TAG, FULL_STATE_SELECTOR, MOVE_TAG, ObjectSelector, SelectorMap, State } from '@webkrafters/eagleeye';
 import { InjectionToken } from '@angular/core';
+import clonedeep from '@webkrafters/clone-total';
 
 function getServiceInstance<
 	T extends State,
@@ -134,6 +135,68 @@ describe( 'StreamService', () => {
 		} );
 		test( 'omitting selectorMap produces empty data property', () => {
 			expect( getServiceInstance( sourceData ).streamService.data ).toEqual({});
+		} );
+		describe( 'selectorMap update', () => {
+			const selectorMapOnRender =  {
+				year3: 'history.places[2].year',
+				isActive: 'isActive',
+				tag6: 'tags[5]'
+			} as const;
+			const selectorMapOnRerender = {
+				...selectorMapOnRender,
+				country3: 'history.places[2].country'
+			} as const
+			describe( 'normal flow', () => {
+				test( 'adjusts the store on selctorMap change', () => {
+					const { streamService } = getServiceInstance(
+						createSourceData(), selectorMapOnRender
+					);
+					expect( Object.keys( streamService.data ) )
+						.toEqual( Object.keys( selectorMapOnRender ));
+					streamService.selectorMap = selectorMapOnRerender;
+					expect( Object.keys( streamService.data ) )
+						.toEqual( Object.keys( selectorMapOnRerender ));
+				});
+				describe( 'when the new selectorMap is not empty', () => {
+					test( 'refreshes state data', () => {
+						const { streamService } = getServiceInstance( createSourceData() );
+						expect( streamService.data ).toEqual({});
+						streamService.selectorMap = selectorMapOnRerender;
+						expect( Object.keys( streamService.data ) )
+							.toEqual( Object.keys( selectorMapOnRerender ) );
+					} );
+				});
+			} );
+			describe( 'when the new selectorMap is empty', () => {
+				describe( 'and existing data is not empty', () => {
+					test( 'adjusts the store on selctorMap change', () => {
+						const { streamService } = getServiceInstance(
+							createSourceData(), selectorMapOnRender
+						);
+						expect( Object.keys( streamService.data ) )
+							.toEqual( Object.keys( selectorMapOnRender ));
+						streamService.selectorMap = undefined as unknown as typeof selectorMapOnRender;
+						expect( streamService.data ).toEqual({});
+					} );
+					test( 'refreshes state data with empty object', async () => {
+						const { streamService } = getServiceInstance(
+							undefined, selectorMapOnRender
+						);
+						expect( Object.keys( streamService.data ) )
+							.toEqual( Object.keys( selectorMapOnRender ) );
+						streamService.selectorMap = undefined as unknown as typeof selectorMap;
+						expect( streamService.data ).toEqual({});
+					} );
+				} );
+				describe( 'and existing data is empty', () => {
+					test( 'leaves the store as-is on selctorMap change', async () => {
+						const { streamService } = getServiceInstance();
+						expect( streamService.data ).toEqual({});
+						streamService.selectorMap = {};
+						expect( streamService.data ).toEqual({});
+					} );
+				} );
+			} );
 		} );
 		describe( 'stream.data', () => {
 			const defaultState = createSourceData();

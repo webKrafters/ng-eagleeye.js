@@ -96,18 +96,17 @@ export class Stream<
     selectorMap? : S
   ) {
     this._channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
-    const tData = this._channel.data;
-    const _data = { ...this._data } as typeof tData;
-    for( let k in tData ) {
-      _data[ k ] = signal( tData[ k ] ) as Data<S, T>[Extract<keyof Data<S, T>, string>];
-    }
-    this._data = _data as DataSignals<T, S>;
     this._channel.addListener( 'data-changed', () => this.refreshData() );
+    this.refreshData();
   }
 
   protected get channel() { return this._channel }
 
   get data() { return this._data }
+
+  set selectorMap( selectorMap : S ) {
+    this._channel.selectorMap = selectorMap;
+  }
 
   /** @param {string[]} [propertyPaths] - Array of object paths to a state slice e.g. [ 'a.b[3]', 'a.e.2.e', 'x.y.z' ] */
   resetState( propertyPaths? : Array<string> ) { this._channel.resetState( propertyPaths ) }
@@ -116,9 +115,17 @@ export class Stream<
 
   private refreshData() {
     const tData = this._channel.data;
+    if( !Object.keys( tData ).length ) {
+      this._data = {} as typeof this._data;
+      return;
+    }
     for( let k in tData ) {
-      this._data[ k ]() !== tData[ k ] &&
-      this._data[ k ].set( tData[ k ] );
+      try {
+        this._data[ k ]() !== tData[ k ] &&
+        this._data[ k ].set( tData[ k ] );
+      } catch( e ) {
+        this._data[ k ] = signal( tData[ k ] );
+      }
     }
   }
 }
