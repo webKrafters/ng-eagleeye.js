@@ -20,7 +20,7 @@ import { __INTERNAL__, ContextService } from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
 
-export type StreamData<C> = C extends ContextService<infer U> ? C : never;
+type StreamData<C> = C extends ContextService<infer U> ? C : never;
 
 type SignalGen<
   T extends State,
@@ -82,7 +82,7 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  * {myX: 'd.e.f[1].x'} or {myX: 'd.e.f.1.x'} => {myX: 7} // same applies to {myY: 'd.e.f[1].y'} = {myY: 8}; {myZ: 'd.e.f[1].z'} = {myZ: 9}
  * {myData: '@@STATE'} => {myData: state}
  */
-export class Stream<
+class Stream<
   T extends State = State,
   const S extends SelectorMap = undefined
 > {
@@ -146,7 +146,7 @@ export class StreamService<
 
 }
 
-export function createStreamService<
+function createStreamService<
   T extends State,
   const S extends SelectorMap
 >( config : StreamServiceConfig<T, S> = {} ) {

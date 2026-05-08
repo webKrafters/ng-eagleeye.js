@@ -22,7 +22,7 @@ import validateRef from './util/vaildate-service-ref';
 
 export const __INTERNAL__ = Symbol( 'Internal' );
 
-export type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<infer U> ? C : never;
+type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<infer U> ? C : never;
 
 export const CONTEXT_DESCRIPTOR = 'EagleEye_Context_Service';
 
@@ -31,7 +31,7 @@ export interface ContextServiceConfig<T extends State>{
   ref? : InjectionToken<ContextService<T>>;
 }
 
-export class Context<T extends State = State> {
+class Context<T extends State = State> {
   
   private consumer : EagleEyeContext<T>;
   
@@ -83,7 +83,7 @@ export class ContextService<T extends State = State> extends Context<T> {
   
 }
 
-export function createContextService<T extends State>(
+function createContextService<T extends State>(
   config? : ContextServiceConfig<T>
 ) {
   return new ContextService( config?.attrs as ProviderProps<T> );
