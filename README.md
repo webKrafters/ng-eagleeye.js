@@ -24,13 +24,13 @@
 
 <ul>
 	<li> Ready for use anywhere in the app as needed.</li>
-	<li> Streams present as stream service where properties are automatically UI render ready  <a href="https://ng-eagleeye.js.org/serivce/stream"><code>Stream Service</code></a> API.</li>
-	<li> Auto-immutable update-friendly context. See <a href="https://ng-eagleeye.js.org/concepts/stream/setstate"><code>stream.setState</code></a>.</li>
-	<li> A context bearing an observable consumer <a href="https://ng-eagleeye.js.org/concepts/stream">stream</a>.</li>
-	<li> Recognizes <b>negative array indexing</b>. Please see <a href="https://ng-eagleeye.js.org/concepts/property-path">Property Path</a> and <code>store.setState</code> <a href="https://react-eagleeye.js.org/concepts/store/setstate#indexing">Indexing</a>.</li>
+	<li> Streams present as stream service where properties are automatically UI render ready  <a href="https://ng-eagleeye.js.org/overview/streaming"><code>Stream Service</code></a> API.</li>
+	<li> Auto-immutable update-friendly context. See <a href="https://ng-eagleeye.js.org/concepts/store/setstate"><code>store.setState</code></a>.</li>
+	<li> A context bearing an observable consumer <a href="https://ng-eagleeye.js.org/overview/streaming">stream</a>.</li>
+	<li> Recognizes <b>negative array indexing</b>. Please see <a href="https://ng-eagleeye.js.org/concepts/property-path">Property Path</a> and <code>store.setState</code> <a href="https://ng-eagleeye.js.org/concepts/store/setstate#indexing">Indexing</a>.</li>
 	<li> Only updates subscribing components (<a href="https://ng-eagleeye.js.org/concepts/client">clients</a>) on context state changes.</li>
 	<li> Subscribing component decides which context state properties' changes to trigger its update.</li>
-	<li>OOB Support for framework-agnostic state sharing among applications. Simply create an <a href="https://auto-immutable.js.org/intro/">Auto Immutable</a> instance to pass around as the <code>value</code> argument for this or any <a href="https://eagleeye.js.org">Eagle Eye</a> based state manager instances.</li>
+	<li>OOB Support for framework-agnostic state sharing among applications. Simply create an <a href="https://auto-immutable.js.org/intro/">Auto Immutable</a> instance to pass around as the <code>value</code> argument for this or any <a href="https://eagleeye.js.org">Eagle Eye</a> based <a href="https://www.npmjs.com/package/@webkrafters/eagleeye?activeTab=readme#usage">state manager instances.</a>.</li>
 </ul>
 
 **Name:** Angular Eagle Eye.
