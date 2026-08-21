@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
 	CONTEXT_DESCRIPTOR,
@@ -15,9 +15,17 @@ import {
 import createSourceData, {
 	SourceData
 } from './test-artifacts/data/create-state-obj';
-import { Changes, DELETE_TAG, FULL_STATE_SELECTOR, MOVE_TAG, ObjectSelector, SelectorMap, State } from '@webkrafters/eagleeye';
-import { InjectionToken } from '@angular/core';
-import clonedeep from '@webkrafters/clone-total';
+import {
+	Changes,
+	Channel,
+	DELETE_TAG,
+	FULL_STATE_SELECTOR,
+	MOVE_TAG,
+	SelectorMap,
+	State
+} from '@webkrafters/eagleeye';
+import { Component, inject, InjectionToken } from '@angular/core';
+import { provideRouter, Router } from '@angular/router';
 
 function getServiceInstance<
 	T extends State,
@@ -77,7 +85,7 @@ describe( 'StreamService', () => {
 						attrs: {
 							value: { age: 22 }
 						},
-						ref: new InjectionToken( `${ CONTEXT_DESCRIPTOR }_Testing` )
+						ref: ctxRef
 					}),
 					provideStreamService({
 						contextRef: ctxRef,
@@ -468,6 +476,52 @@ describe( 'StreamService', () => {
 						expect( streamService.data ).toEqual({});
 						expect( contextService.store.getState() ).toBe( alteredState );						} );
 				} );
+			} );
+		} );
+	} );
+	describe( 'exiting stream', () => {
+		let endStreamSpy : jest.SpyInstance<void, [], any>;
+		afterEach(() => { endStreamSpy.mockRestore() });
+		beforeEach(() => { endStreamSpy = jest.spyOn( Channel.prototype, 'endStream' ) } );
+		test( 'immediate exit with no routing service', () => {
+			getServiceInstance();
+			expect( endStreamSpy ).not.toHaveBeenCalled();
+			TestBed.resetTestingModule();
+			expect( endStreamSpy ).toHaveBeenCalled();
+		} );
+		describe( 'with routing service', () => {
+			const routePath = 'test-dummy';
+			let fixture : ComponentFixture<TestComponent>;
+			@Component({
+				providers: [ provideStreamService() ],
+				standalone: true,
+				template: '<button (click)="reset()">reset PII</button>'
+			})
+			class TestComponent{
+				private streamService = inject<StreamService<SourceData, undefined>>( StreamService );
+				reset(){ this.streamService.resetState([ 'age', 'email', 'name', 'picture' ]) }
+			}
+			beforeEach(() => {
+				TestBed.configureTestingModule({
+					providers: [
+						provideRouter([{
+							component: class{},
+							path: routePath
+						}]),
+						provideContextService()
+					]
+				});
+				fixture = TestBed.createComponent( TestComponent );
+			});
+			test( 'no exit on route-change event', async () => {
+				expect( endStreamSpy ).not.toHaveBeenCalled();
+				await TestBed.inject( Router ).navigate([ routePath ]);
+				expect( endStreamSpy ).not.toHaveBeenCalled();
+			} );
+			test( 'immediate exit when triggered by non route-change event', () => {
+				expect( endStreamSpy ).not.toHaveBeenCalled();
+				fixture.destroy();
+				expect( endStreamSpy ).toHaveBeenCalled();
 			} );
 		} );
 	} );

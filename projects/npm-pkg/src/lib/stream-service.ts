@@ -136,14 +136,17 @@ export class StreamService<
 > extends Stream<T, S> {
 
   private destroyRef = inject( DestroyRef );
+
   constructor(
     contextSvc : ContextService<T>,
     selectorMap? : S
   ) {
     super( contextSvc, selectorMap );
-    this.destroyRef.onDestroy(() => this.channel.endStream());
+    this.destroyRef.onDestroy(() => {
+      !contextSvc.isNavigating
+      && this.channel.endStream();
+    } );
   }
-
 }
 
 function createStreamService<

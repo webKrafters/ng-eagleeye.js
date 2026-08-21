@@ -11,21 +11,17 @@ import {
 	Prehooks,
 	ProviderProps,
 	RawProviderProps,
-	type SelectorMap,
-	type State,
-	type Store
-} from './';
+	type State
+} from '.';
 
 import {
 	CONTEXT_DESCRIPTOR,
 	ContextService,
 	ContextServiceConfig,
-	createContextService,
 	provideContextService
 } from './context-service';
 
 import createSourceData, { SourceData } from './test-artifacts/data/create-state-obj';
-import { Stream, StreamService } from './stream-service';
 
 type ServiceArgs0<T extends State> = ProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
 type ServiceArgs1<T extends State> = RawProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
