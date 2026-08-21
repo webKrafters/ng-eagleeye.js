@@ -10,7 +10,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/lib/stream-service.spec.ts_", "src/lib/stream-service.spec.ts___"  ],
   "exclude": [
     "**/*.spec.ts"
   ]

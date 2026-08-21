@@ -15,10 +15,12 @@ import {
   Prehooks,
   ProviderProps,
   RawProviderProps,
+  Router,
   State
 } from '.';
 
 import validateRef from './util/vaildate-service-ref';
+import { NavigationStart } from '@angular/router';
 
 export const __INTERNAL__ = Symbol( 'Internal' );
 
@@ -72,14 +74,26 @@ class Context<T extends State = State> {
 
 export class ContextService<T extends State = State> extends Context<T> {
 
+  private _appRouter = inject( Router, { optional: true } );
+  private _isNavigating = false;
   private destroyRef = inject( DestroyRef );
 
   constructor( config? : ProviderProps<T> );
   constructor( config? : RawProviderProps<T> );
   constructor( config? : any ) {
     super( config );
-    this.destroyRef.onDestroy(() => this.dispose());
+    const navSub = this.appRouter?.events.subscribe( e => {
+      this._isNavigating = e instanceof NavigationStart;
+    });
+    this.destroyRef.onDestroy(() => {
+      this.dispose();
+      navSub?.unsubscribe();
+    });
   }
+
+  get appRouter() { return this._appRouter }
+
+  get isNavigating() { return this._isNavigating }
   
 }
 

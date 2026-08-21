@@ -24,10 +24,7 @@ export type {
     Listener,
     ObjectSelector,
     Prehooks,
-    ProviderProps,
-	RawProviderProps,
     SelectorMap,
-    State,
     Store,
     StoreInternal,
     StoreRef,
@@ -35,6 +32,20 @@ export type {
     Text,
     Unsubscribe
 } from '@webkrafters/eagleeye';
+
+import { Router } from '@angular/router';
+
+import type {
+    ProviderProps as BaseProviderProps,
+	RawProviderProps as BaseRawProviderProps,
+    State
+} from '@webkrafters/eagleeye';
+
+export { BaseProviderProps, BaseRawProviderProps, Router, State };
+
+export interface ProviderProps<T extends State> extends BaseProviderProps<T>{ appRouter? : Router }
+
+export interface RawProviderProps<T extends State> extends BaseRawProviderProps<T>{ appRouter? : Router }
 
 export {
     CLEAR_TAG,
