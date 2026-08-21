@@ -20,7 +20,10 @@ import {
 } from '.';
 
 import validateRef from './util/vaildate-service-ref';
-import { NavigationStart } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationStart
+} from '@angular/router';
 
 export const __INTERNAL__ = Symbol( 'Internal' );
 
@@ -83,8 +86,12 @@ export class ContextService<T extends State = State> extends Context<T> {
   constructor( config? : any ) {
     super( config );
     const navSub = this.appRouter?.events.subscribe( e => {
-      this._isNavigating = e instanceof NavigationStart;
-    });
+      if( e instanceof NavigationEnd ) {
+        this._isNavigating = false;
+      } else if( e instanceof NavigationStart ) {
+        this._isNavigating = true;
+      }
+    } );
     this.destroyRef.onDestroy(() => {
       this.dispose();
       navSub?.unsubscribe();
