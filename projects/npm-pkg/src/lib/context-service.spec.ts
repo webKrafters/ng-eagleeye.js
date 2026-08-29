@@ -1,8 +1,9 @@
+
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { InjectionToken, Provider } from '@angular/core';
 
 import * as AutoImmutableModule from '@webkrafters/auto-immutable';
-
-import { InjectionToken, Provider } from '@angular/core';
 
 import {
 	Changes,
@@ -18,10 +19,13 @@ import {
 	CONTEXT_DESCRIPTOR,
 	ContextService,
 	ContextServiceConfig,
+	deps,
 	provideContextService
 } from './context-service';
 
 import createSourceData, { SourceData } from './test-artifacts/data/create-state-obj';
+import { isPlatformBrowser } from '@angular/common';
+import { ChannelRegistry } from '@webkrafters/eagleeye.channels.repository';
 
 type ServiceArgs0<T extends State> = ProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
 type ServiceArgs1<T extends State> = RawProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
@@ -313,6 +317,27 @@ describe( 'ContextService', () => {
 			ctx.storage = undefined as unknown as IStorage<SourceData>;
 		} );
 		describe( 'readonly', () => {
+			test( 'utilizes channel pooling in the browser', () => {
+				expect( getServiceInstance().channelRegistry ).toBeInstanceOf( ChannelRegistry );
+			} );
+			test( 'does not utilize channel pooling in the server', async () => {
+				const isPlatformBrowserSpy = jest
+					.spyOn( deps, 'isPlatformBrowser' )
+					.mockReturnValue( false );
+				expect( getServiceInstance().channelRegistry ).toBeNull();
+				isPlatformBrowserSpy.mockRestore();
+			} );
+			test( 'cannot update channelRegistry', () => {
+				const ctx = getServiceInstance();
+				expect( ctx.closed ).toBe( false );
+				expect(() => {
+					// @ts-expect-error
+					ctx.closed = true;
+				}).toThrow( 'Cannot set property closed of #<Context> which has only a getter' );
+				expect( ctx.closed ).toBe( false );
+				ctx.dispose();
+				expect( ctx.closed ).toBe( true );
+			} );
 			test( 'furnishes access to underlying cache', () => {
 				const ctx = getServiceInstance({ value: createSourceData() });
 				expect( ctx.cache ).toBeInstanceOf( AutoImmutableModule.default );

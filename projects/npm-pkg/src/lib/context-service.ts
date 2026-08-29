@@ -1,13 +1,24 @@
+import { isPlatformBrowser } from '@angular/common';
+
 import {
   DestroyRef,
   inject,
   InjectionToken,
+  PLATFORM_ID,
   Provider
 } from '@angular/core';
 
 import {
+  NavigationEnd,
+  NavigationStart
+} from '@angular/router';
+
+import {
+  BaseStream,
+  Channel,
   createEagleEye,
-  EagleEyeContext
+  EagleEyeContext,
+  SelectorMap
 } from '@webkrafters/eagleeye';
 
 import {
@@ -20,16 +31,20 @@ import {
 } from '.';
 
 import validateRef from './util/vaildate-service-ref';
+
 import {
-  NavigationEnd,
-  NavigationStart
-} from '@angular/router';
+  type Channel as MemoChannel,
+  ChannelRegistry,
+  MemoDetail
+} from '@webkrafters/eagleeye.channels.repository';
 
 export const __INTERNAL__ = Symbol( 'Internal' );
 
 type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<infer U> ? C : never;
 
 export const CONTEXT_DESCRIPTOR = 'EagleEye_Context_Service';
+
+export const deps = { isPlatformBrowser }
 
 export interface ContextServiceConfig<T extends State>{
   attrs? : ProviderProps<T>|RawProviderProps<T>;
@@ -75,16 +90,43 @@ class Context<T extends State = State> {
 
 }
 
+export class ChannelPool<
+  T extends State = State,
+  S extends SelectorMap = SelectorMap
+> implements MemoChannel<T> {
+  private _source : Channel<T, S>;
+  private _memoDetail = {
+    group: undefined,
+    key: undefined,
+    owner: undefined,
+    registry: undefined
+  } as unknown as MemoDetail<T>
+  constructor( stream : BaseStream<T>, selectorMap : S ) {
+    this._source = stream( selectorMap );
+  }
+  get source() { return this._source }
+  get memoDetail() { return this._memoDetail }
+}
+
 export class ContextService<T extends State = State> extends Context<T> {
 
   private _appRouter = inject( Router, { optional: true } );
+  private _channelRegistry = null as unknown as ChannelRegistry<T>;
   private _isNavigating = false;
   private destroyRef = inject( DestroyRef );
+  private platformId = inject( PLATFORM_ID );
 
   constructor( config? : ProviderProps<T> );
   constructor( config? : RawProviderProps<T> );
   constructor( config? : any ) {
     super( config );
+    if( !deps.isPlatformBrowser( this.platformId ) ) {
+      this.destroyRef.onDestroy(() => this.dispose());
+      return;
+    }
+		this._channelRegistry = new ChannelRegistry<T>(
+      ( stream, selectorMap ) => new ChannelPool<T, any>( stream, selectorMap )
+    );
     const navSub = this.appRouter?.events.subscribe( e => {
       if( e instanceof NavigationEnd ) {
         this._isNavigating = false;
@@ -99,6 +141,8 @@ export class ContextService<T extends State = State> extends Context<T> {
   }
 
   get appRouter() { return this._appRouter }
+
+  get channelRegistry() { return this._channelRegistry }
 
   get isNavigating() { return this._isNavigating }
   
