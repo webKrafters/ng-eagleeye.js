@@ -3,10 +3,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
 	CONTEXT_DESCRIPTOR,
 	ContextService,
+	deps,
 	provideContextService
 } from './context-service';
 
 import {
+	BrowserStreamService,
+	MemoryStreamService,
 	provideStreamService,
 	STREAM_DESCRIPTOR,
 	StreamService
@@ -30,15 +33,15 @@ import { provideRouter, Router } from '@angular/router';
 function getServiceInstance<
 	T extends State,
 	const S extends SelectorMap
->( value? : T, selectorMap? : S ) {
+>( value? : T, selectorMap? : S, clientId = 'TEST_ID22' ) {
 	TestBed.configureTestingModule({
 		providers: [
 			typeof value !== 'undefined'
 			? provideContextService({ attrs: { value } })
 			: provideContextService(),
 			typeof selectorMap !== 'undefined'
-			? provideStreamService({ selectorMap })
-			: provideStreamService()
+			? provideStreamService({ clientId, selectorMap })
+			: provideStreamService({ clientId })
 		]
 	});
 	return {
@@ -63,6 +66,7 @@ describe( 'StreamService', () => {
 					ref: ctxRef
 				}),
 				provideStreamService({
+					clientId: 'TEST_CONTAINER',
 					contextRef: ctxRef,
 					ref: strRef,
 					selectorMap
@@ -88,6 +92,7 @@ describe( 'StreamService', () => {
 						ref: ctxRef
 					}),
 					provideStreamService({
+						clientId: 'MY_TEST_CONTAINER',
 						contextRef: ctxRef,
 						ref: ctxRef, // requires an injection token with a stream service descriptor prefix
 						selectorMap: { myAge: 'age' }
@@ -104,6 +109,16 @@ describe( 'StreamService', () => {
 			all: FULL_STATE_SELECTOR
 		} as const;
 		const sourceData = createSourceData();
+		test( 'applies the browser stream in browser env.', () => {
+			expect( getServiceInstance( sourceData, selectorMap ).streamService ).toBeInstanceOf( BrowserStreamService );
+		} );	
+		test( 'applies the memory stream in non-browser env.', () => {
+			const isPlatformBrowserSpy = jest
+				.spyOn( deps, 'isPlatformBrowser' )
+				.mockReturnValue( false );
+			expect( getServiceInstance( sourceData, selectorMap ).streamService ).toBeInstanceOf( MemoryStreamService );
+			isPlatformBrowserSpy.mockRestore();
+		} );
 		test( 'accepts object based selectorMap', () => {
 			const { streamService } = getServiceInstance( sourceData, selectorMap );
 			expect( streamService.data ).toEqual({
@@ -493,7 +508,9 @@ describe( 'StreamService', () => {
 			const routePath = 'test-dummy';
 			let fixture : ComponentFixture<TestComponent>;
 			@Component({
-				providers: [ provideStreamService() ],
+				providers: [ provideStreamService({
+					clientId: 'MY_RESET_BTN',
+				}) ],
 				standalone: true,
 				template: '<button (click)="reset()">reset PII</button>'
 			})

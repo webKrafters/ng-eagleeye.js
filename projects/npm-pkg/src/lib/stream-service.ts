@@ -16,7 +16,11 @@ import {
   State
 } from '.';
 
-import { __INTERNAL__, ContextService } from './context-service';
+import {
+  __INTERNAL__,
+  ChannelPool,
+  ContextService
+} from './context-service';
 
 import validateRef from './util/vaildate-service-ref';
 
@@ -38,6 +42,7 @@ export interface StreamServiceConfig<
   T extends State,
   S extends SelectorMap
 >{
+  clientId: string;
   contextRef? : InjectionToken<ContextService<T>>;
   ref? : InjectionToken<StreamService<T,S>>;
   selectorMap? : S;
@@ -82,7 +87,7 @@ export const STREAM_DESCRIPTOR = 'EagleEye_Stream_Service';
  * {myX: 'd.e.f[1].x'} or {myX: 'd.e.f.1.x'} => {myX: 7} // same applies to {myY: 'd.e.f[1].y'} = {myY: 8}; {myZ: 'd.e.f[1].z'} = {myZ: 9}
  * {myData: '@@STATE'} => {myData: state}
  */
-class Stream<
+export class Stream<
   T extends State = State,
   const S extends SelectorMap = undefined
 > {
@@ -91,22 +96,15 @@ class Stream<
 
   private _channel : Channel<T, S>;
 
-  constructor(
-    contextSvc : ContextService<T>,
-    selectorMap? : S
-  ) {
-    this._channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
+  constructor( channel : Channel<T, S> ) {
+    this._channel = channel;
     this._channel.addListener( 'data-changed', () => this.refreshData() );
     this.refreshData();
   }
 
-  protected get channel() { return this._channel }
-
   get data() { return this._data }
 
-  set selectorMap( selectorMap : S ) {
-    this._channel.selectorMap = selectorMap;
-  }
+  set selectorMap( selectorMap : S ) { this._channel.selectorMap = selectorMap };
 
   /** @param {string[]} [propertyPaths] - Array of object paths to a state slice e.g. [ 'a.b[3]', 'a.e.2.e', 'x.y.z' ] */
   resetState( propertyPaths? : Array<string> ) { this._channel.resetState( propertyPaths ) }
@@ -130,45 +128,106 @@ class Stream<
   }
 }
 
-export class StreamService<
+export class BrowserStream<
   T extends State = State,
   const S extends SelectorMap = undefined
 > extends Stream<T, S> {
+  private _channelPool : ChannelPool<T, S>;
+  constructor( channelPool : ChannelPool<T, S> ) {
+    super( channelPool.source );
+    this._channelPool = channelPool;
+  }
+}
 
-  private destroyRef = inject( DestroyRef );
+export abstract class StreamService<
+  T extends State,
+  const S extends SelectorMap
+>{
+  private _stream : Stream<T,S>;
+  protected destroyRef = inject( DestroyRef );
+  constructor( stream : Stream<T, S> ) { this._stream = stream }
+  set selectorMap( selectorMap : S ) { this._stream.selectorMap = selectorMap }
+  get data() { return this._stream.data }
+  get resetState() { return this._stream.resetState.bind( this._stream ) }
+  get setState() { return this._stream.setState.bind( this._stream ) }
+}
 
+export class BrowserStreamService<
+  T extends State = State,
+  const S extends SelectorMap = any
+> extends StreamService<T, S> {
+  private _channel : ChannelPool<T,S>;
   constructor(
     contextSvc : ContextService<T>,
+    clientId : string,
     selectorMap? : S
   ) {
-    super( contextSvc, selectorMap );
+    let channel = contextSvc
+      .channelRegistry
+      .getChannelEntryFor( clientId )
+      .at( selectorMap );
+    /* istanbul ignore next */
+    if( !channel ) {
+      channel = contextSvc
+        .channelRegistry
+        .registerStream( contextSvc.getStream( __INTERNAL__ ) )
+        .for( clientId )
+        .at( selectorMap );
+    }
+    const _channel = channel as unknown as ChannelPool<T, S>;
+    super( new BrowserStream( _channel ) );
+    this._channel = _channel;
     this.destroyRef.onDestroy(() => {
-      !contextSvc.isNavigating
-      && this.channel.endStream();
-    } );
+      /* istanbul ignore next */
+      if( contextSvc.isNavigating ) { return }
+      const pool = _channel.memoDetail.registry;
+			pool.unregisterStreamerFrom( this._channel );
+      !pool.getChannelEntryFor( clientId ).at( selectorMap )
+      && this._channel.source.endStream();
+    });
+  }
+
+  override set selectorMap( selectorMap : S ) {
+    this._channel
+      .memoDetail
+			.registry
+			.recalibrateChannel( this._channel )
+			.against( selectorMap );
+		super.selectorMap = selectorMap;
+  }
+}
+
+export class MemoryStreamService<
+  T extends State = State,
+  const S extends SelectorMap = any
+> extends StreamService<T, S>{
+  constructor( contextSvc : ContextService<T>, selectorMap? : S ) {
+    const channel = contextSvc.getStream( __INTERNAL__ )( selectorMap );
+    super( new Stream( channel ) );
+    this.destroyRef.onDestroy(() => channel.endStream());
   }
 }
 
 function createStreamService<
   T extends State,
   const S extends SelectorMap
->( config : StreamServiceConfig<T, S> = {} ) {
-  return new StreamService(
-    inject( config.contextRef ?? ContextService ),
-    config.selectorMap
-  );
+>( config : StreamServiceConfig<T, S> ) {
+  const contextSvc = inject( config.contextRef ?? ContextService );
+  return !!contextSvc.channelRegistry
+    ? new BrowserStreamService( contextSvc, config.clientId, config.selectorMap )
+    : new MemoryStreamService( contextSvc, config.selectorMap );
 }
 
 export function provideStreamService<
   T extends State,
   const S extends SelectorMap
 >(
-  config? : StreamServiceConfig<T, S>
+  config : StreamServiceConfig<T, S>
 ) : Array<Provider> {
-  if( !config ) {
+  if( Object.keys( config ).length === 1 && 'clientId' in config ) {
     return [{
       provide: StreamService,
-      useFactory: createStreamService
+      useFactory: () => createStreamService( config )
     }];
   }
   validateRef( STREAM_DESCRIPTOR, config.ref );
@@ -181,6 +240,6 @@ export function provideStreamService<
   }, {
     deps: [ STREAM_SVC_CONFIG ],
     provide: config.ref ?? StreamService,
-    useFactory: createStreamService
+    useFactory: () => createStreamService( config )
   }];
 }
