@@ -40,7 +40,7 @@ import {
 
 export const __INTERNAL__ = Symbol( 'Internal' );
 
-type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<infer U> ? C : never;
+export type ContextData<C> = C extends ProviderProps<infer U>|RawProviderProps<infer U> ? C : never;
 
 export const CONTEXT_DESCRIPTOR = 'EagleEye_Context_Service';
 
