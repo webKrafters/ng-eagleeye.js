@@ -211,7 +211,7 @@ export class MemoryStreamService<
 function createStreamService<
   T extends State,
   const S extends SelectorMap
->( config : StreamServiceConfig<T, S> ) {
+>( config : StreamServiceConfig<T, S> ) : StreamService<T, S> {
   const contextSvc = inject( config.contextRef ?? ContextService );
   return !!contextSvc.channelRegistry
     ? new BrowserStreamService( contextSvc, config.clientId, config.selectorMap )
