@@ -68,5 +68,5 @@
     "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
   },
   "sideEffects": false,
-  "version": "2.0.0"
+  "version": "2.0.1"
 }
