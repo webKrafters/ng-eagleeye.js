@@ -1,0 +1,72 @@
+{
+  "alias": "Angular Eagle Eye",
+  "author": "Stephen Isienyi <stephen.isienyi@webkrafters.tech>",
+  "bugs": {
+    "url": "https://github.com/webKrafters/ng-eagleeye.js/issues"
+  },
+  "contributors": [
+    "steveswork <stephen.isienyi@gmail.com> (https://github.com/steveswork)"
+  ],
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "description": "Angular Eagle Eye - Reactive Streamable Observable Auto-Immutable Update-friendly State Management System for Angular 17+. Maintaining application wide state made easy.",
+  "homepage": "https://ng-eagleeye.js.org",
+  "keywords": [
+    "connect",
+    "context",
+    "eagle eye",
+    "angular eagle eye",
+    "ng eagle eye",
+    "eagleeye",
+    "angular-eagleeye",
+    "ng-eagleeye",
+    "eagleeye service",
+    "observable",
+    "observable context",
+    "angular state",
+    "ng state",
+    "angular context",
+    "ng context",
+    "angular observable conttext",
+    "state",
+    "state management",
+    "state manager",
+    "angular useContext",
+    "ng useContext",
+    "angular useStream",
+    "ng useStream",
+    "stream",
+    "change stream"
+  ],
+  "license": "GPL-3.0-only",
+  "name": "@webkrafters/ng-eagleeye",
+  "peerDependencies": {
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@webkrafters/clone-total": ">= 1.0.1",
+    "@webkrafters/eagleeye": ">= 1.0.11",
+    "@webkrafters/eagleeye.channels.repository": ">= 1.0.0",
+    "@webkrafters/get-property": ">= 1.0.1",
+    "@webkrafters/path-dotize": ">= 0.0.2",
+    "@webkrafters/timed-map": "^2.0.0",
+    "lodash.clonedeep": ">= 0.1.0",
+    "lodash.clonedeepwith": ">= 0.1.0",
+    "lodash.isboolean": ">= 0.1.0",
+    "lodash.isempty": ">= 0.1.0",
+    "lodash.isequal": ">= 0.1.0",
+    "lodash.isinteger": ">= 0.1.0",
+    "lodash.isobject": ">= 0.1.0",
+    "lodash.isplainobject": ">= 0.8.0",
+    "lodash.omit": ">= 0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webKrafters/ng-eagleeye.js.git"
+  },
+  "sideEffects": false,
+  "version": "2.0.2"
+}

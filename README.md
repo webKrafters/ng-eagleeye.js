@@ -1,59 +1,59 @@
-# NgEagleeyeJs
+<p align="center">
+   <img alt="Eagle Eye" height="150px" src="logo.png" width="250px" />
+</p>
+<p align="center">
+   <a href="https://typescriptlang.org">
+	  <img alt="TypeScript" src="https://badgen.net/badge/icon/typescript?icon=typescript&label">
+   </a>
+   <a href="https://github.com/webKrafters/ng-eagleeye.js/actions">
+	  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/webKrafters/ng-eagleeye.js/test.yml">
+   </a>
+   <a href="https://coveralls.io/github/webKrafters/ng-eagleeye.js">
+	  <img alt="coverage" src="https://img.shields.io/coveralls/github/webKrafters/ng-eagleeye.js">
+   </a>
+   <img alt="NPM" src="https://img.shields.io/npm/l/@webkrafters/ng-eagleeye">
+   <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2032">
+   <img alt="build size" src="https://img.shields.io/bundlephobia/minzip/@webkrafters/ng-eagleeye?label=bundle%20size">
+   <a href="https://www.npmjs.com/package/@webKrafters/ng-eagleeye">
+	  <img alt="Downloads" src="https://img.shields.io/npm/dt/@webkrafters/ng-eagleeye.svg">
+   </a>
+   <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/webKrafters/ng-eagleeye.js">
+</p>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.26.
+# Angular Eagle Eye
 
-## Development server
+<ul>
+	<li> Ready for use anywhere in the app as needed.</li>
+	<li> Streams present as stream service where properties are automatically UI render ready  <a href="https://ng-eagleeye.js.org/overview/streaming"><code>Stream Service</code></a> API.</li>
+	<li> Auto-immutable update-friendly context. See <a href="https://ng-eagleeye.js.org/concepts/store/setstate"><code>store.setState</code></a>.</li>
+	<li> A context bearing an observable consumer <a href="https://ng-eagleeye.js.org/overview/streaming">stream</a>.</li>
+	<li> Recognizes <b>negative array indexing</b>. Please see <a href="https://ng-eagleeye.js.org/concepts/property-path">Property Path</a> and <code>store.setState</code> <a href="https://ng-eagleeye.js.org/concepts/store/setstate#indexing">Indexing</a>.</li>
+	<li> Only updates subscribing components (<a href="https://ng-eagleeye.js.org/concepts/client">clients</a>) on context state changes.</li>
+	<li> Subscribing component decides which context state properties' changes to trigger its update.</li>
+	<li>OOB Support for framework-agnostic state sharing among applications. Simply create an <a href="https://auto-immutable.js.org/intro/">Auto Immutable</a> instance to pass around as the <code>value</code> argument for this or any <a href="https://eagleeye.js.org">Eagle Eye</a> based <a href="https://www.npmjs.com/package/@webkrafters/eagleeye?activeTab=readme#usage">state manager instances.</a>.</li>
+</ul>
 
-To start a local development server, run:
+**Name:** Angular Eagle Eye.
 
-```bash
-ng serve
-```
+**Usage:** Please see <b><a href="https://ng-eagleeye.js.org/getting-started">Getting Started</a></b>.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+**Install:**\
+npm install --save @webkrafters/ng-eagleeye
 
-## Code scaffolding
+**Demo:** [Play with the app on codesandbox](https://codesandbox.io/s/github/webKrafters/ng-eagleeye-app)\
+If sandbox fails to load app, please clone and run the demo repo as follows.
+<ol>
+  <li>open your command line interface in your local machine.</li>
+  <li>run <code>git clone https://github.com/webKrafters/ng-eagleeye-app.git</code></li>
+  <li>run <code>cd ng-eagleeye-app</code></li>
+  <li>run <code>npm install && npm run dev</code></li>
+  <li>open the URL displayed at then of this script run.</li>
+</ol>
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+May also see <b><a href="https://ng-eagleeye.js.org/history/features">What's Changed?</a></b>
 
-```bash
-ng generate component component-name
-```
+Full Documentation: **[ng-eagleeye.js.org](https://ng-eagleeye.js.org)**
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+# License
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+GPLv3
