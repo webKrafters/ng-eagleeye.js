@@ -3,17 +3,17 @@
  */
 export * from './lib';
 export {
-  ChannelPool,
+	ChannelPool,
 	CONTEXT_DESCRIPTOR,
-  type ContextData,
-	type ContextServiceConfig,
+	type ContextData,
 	ContextService,
+	type ContextServiceConfig,
 	provideContextService
 } from './lib/context-service';
 export {
-  BrowserStreamService,
+	BrowserStreamService,
 	type DataSignals,
-  MemoryStreamService,
+	MemoryStreamService,
 	STREAM_DESCRIPTOR,
 	StreamService,
 	type StreamServiceConfig,

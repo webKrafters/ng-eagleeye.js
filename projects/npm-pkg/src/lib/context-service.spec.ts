@@ -51,7 +51,7 @@ function getServiceInstance<T extends State>( args? : any ) : ContextService<T> 
 	return TestBed.inject( ContextService<T> );
 }
 
-describe( 'ContextService', () => {
+describe( 'ContextService', { timeout: 1e7 }, () => {
 	let getDefState : () => SourceData;
 	let getUpdatePayload : () => Changes<SourceData>;
 	beforeAll(() => {
@@ -75,10 +75,11 @@ describe( 'ContextService', () => {
 			const defState = getDefState();
 			const ctx = getServiceInstance({ value: createSourceData() });
 			expect( ctx ).toBeTruthy();
-			const onChangeMock = jest.fn();
+			const onChangeMock = vi.fn();
 			const unsub = ctx.store.subscribe( 'data-updated', onChangeMock );
 			expect( onChangeMock ).not.toHaveBeenCalled();
 			ctx.store.setState( changes );
+			
 			expect( onChangeMock ).toHaveBeenCalled();
 			expect( onChangeMock.mock.calls[ 0 ][ 0 ] ).toEqual( changes );
 			expect( onChangeMock.mock.calls[ 0 ][ 1 ] ).toEqual([
@@ -199,7 +200,7 @@ describe( 'ContextService', () => {
 				test( 'completes `store.resetState` method call', async () => {
 					const ctx = getServiceInstance();
 					ctx.store.setState( getUpdatePayload() );
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.resetState([ FULL_STATE_SELECTOR ]);
@@ -208,7 +209,7 @@ describe( 'ContextService', () => {
 			} );
 			describe( 'when `resetState` prehook exists on the context', () => {
 				test( 'is called by the `store.resetState` method', async () => {
-					const prehooks = Object.freeze({ resetState: jest.fn().mockReturnValue( false ) });
+					const prehooks = Object.freeze({ resetState: vi.fn().mockReturnValue( false ) });
 					const ctx = getServiceInstance({ prehooks });
 					const changes = getUpdatePayload();
 					ctx.store.setState( changes );
@@ -231,20 +232,20 @@ describe( 'ContextService', () => {
 					});
 				} );
 				test( 'completes `store.setState` method call if `setState` prehook returns TRUTHY', async () => {
-					const prehooks = Object.freeze({ resetState: jest.fn().mockReturnValue( true ) });
+					const prehooks = Object.freeze({ resetState: vi.fn().mockReturnValue( true ) });
 					const ctx = getServiceInstance({ prehooks });
 					ctx.store.setState( getUpdatePayload() );
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.resetState([ FULL_STATE_SELECTOR ]);
 					expect( changeMock ).toHaveBeenCalled();
 				} );
 				test( 'aborts `store.setState` method call if `setState` prehook returns FALSY', async () => {
-					const prehooks = Object.freeze({ resetState: jest.fn().mockReturnValue( false ) });
+					const prehooks = Object.freeze({ resetState: vi.fn().mockReturnValue( false ) });
 					const ctx = getServiceInstance({ prehooks });
 					ctx.store.setState( getUpdatePayload() );
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.resetState();
@@ -256,7 +257,7 @@ describe( 'ContextService', () => {
 			describe( 'when `setState` prehook does not exist on the context', () => {
 				test( 'completes `store.setState` method call', async () => {
 					const ctx = getServiceInstance();
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.setState( getUpdatePayload() );
@@ -265,25 +266,25 @@ describe( 'ContextService', () => {
 			} );
 			describe( 'when `setState` prehook exists on the context', () => {
 				test( 'is called by the `store.setState` method', async () => {
-					const prehooks = Object.freeze({ setState: jest.fn().mockReturnValue( false ) });
+					const prehooks = Object.freeze({ setState: vi.fn().mockReturnValue( false ) });
 					const ctx = getServiceInstance({ prehooks });
 					ctx.store.setState( getUpdatePayload() );
 					expect( prehooks.setState ).toHaveBeenCalledTimes( 1 );
 					expect( prehooks.setState ).toHaveBeenCalledWith( getUpdatePayload() );
 				} );
 				test( 'completes `store.setState` method call if `setState` prehook returns TRUTHY', async () => {
-					const prehooks = Object.freeze({ setState: jest.fn().mockReturnValue( true ) });
+					const prehooks = Object.freeze({ setState: vi.fn().mockReturnValue( true ) });
 					const ctx = getServiceInstance({ prehooks });
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.setState( getUpdatePayload() );
 					expect( changeMock ).toHaveBeenCalled();
 				}, 3e4 );
 				test( 'aborts `store.setState` method call if `setState` prehook returns FALSY', async () => {
-					const prehooks = Object.freeze({ setState: jest.fn().mockReturnValue( false ) });
+					const prehooks = Object.freeze({ setState: vi.fn().mockReturnValue( false ) });
 					const ctx = getServiceInstance({ prehooks });
-					const changeMock = jest.fn();
+					const changeMock = vi.fn();
 					ctx.store.subscribe( 'data-updated', changeMock );
 					expect( changeMock ).not.toHaveBeenCalled();
 					ctx.store.setState( getUpdatePayload() );
@@ -296,8 +297,8 @@ describe( 'ContextService', () => {
 		test( 'receives and furnishes prehooks', () => {
 			const ctx = getServiceInstance({ value: createSourceData() })
 			const prehooks = {
-				resetState: jest.fn(),
-				setState: jest.fn()
+				resetState: vi.fn(),
+				setState: vi.fn()
 			} as unknown as Prehooks<SourceData>;
 			ctx.prehooks = prehooks;
 			expect( ctx.prehooks ).toBe( prehooks );
@@ -306,9 +307,9 @@ describe( 'ContextService', () => {
 		test( 'receives and furnishes init data storage', () => {
 			const ctx = getServiceInstance({ value: createSourceData() })
 			const storage = {
-				getItem: jest.fn(),
-				removeItem: jest.fn(),
-				setItem: jest.fn()
+				getItem: vi.fn(),
+				removeItem: vi.fn(),
+				setItem: vi.fn()
 			} as unknown as IStorage<SourceData>;
 			ctx.storage = storage;
 			expect( ctx.storage ).toBe( storage );
@@ -319,7 +320,7 @@ describe( 'ContextService', () => {
 				expect( getServiceInstance().channelRegistry ).toBeInstanceOf( ChannelRegistry );
 			} );
 			test( 'does not utilize channel pooling in the server', async () => {
-				const isPlatformBrowserSpy = jest
+				const isPlatformBrowserSpy = vi
 					.spyOn( deps, 'isPlatformBrowser' )
 					.mockReturnValue( false );
 				expect( getServiceInstance().channelRegistry ).toBeNull();

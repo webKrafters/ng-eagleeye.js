@@ -166,7 +166,7 @@ export class BrowserStreamService<
       .channelRegistry
       .getChannelEntryFor( clientId )
       .at( selectorMap );
-    /* istanbul ignore next */
+    /* v8 ignore next  -- @preserve */
     if( !channel ) {
       channel = contextSvc
         .channelRegistry
@@ -178,7 +178,7 @@ export class BrowserStreamService<
     super( new BrowserStream( _channel ) );
     this._channel = _channel;
     this.destroyRef.onDestroy(() => {
-      /* istanbul ignore next */
+      /* v8 ignore next -- @preserve */
       if( contextSvc.isNavigating ) { return }
       const pool = _channel.memoDetail.registry;
 			pool.unregisterStreamerFrom( this._channel );

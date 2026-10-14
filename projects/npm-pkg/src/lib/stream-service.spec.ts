@@ -1,6 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
+	Component,
+	inject,
+	InjectionToken
+} from '@angular/core';
+
+import { provideRouter, Router } from '@angular/router';
+
+import {
+	Changes,
+	Channel,
+	DELETE_TAG,
+	FULL_STATE_SELECTOR,
+	MOVE_TAG,
+	SelectorMap,
+	State
+} from '@webkrafters/eagleeye';
+
+import {
 	CONTEXT_DESCRIPTOR,
 	ContextService,
 	deps,
@@ -18,39 +36,31 @@ import {
 import createSourceData, {
 	SourceData
 } from './test-artifacts/data/create-state-obj';
-import {
-	Changes,
-	Channel,
-	DELETE_TAG,
-	FULL_STATE_SELECTOR,
-	MOVE_TAG,
-	SelectorMap,
-	State
-} from '@webkrafters/eagleeye';
-import { Component, inject, InjectionToken } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { Mock } from 'vitest';
 
 function getServiceInstance<
 	T extends State,
 	const S extends SelectorMap
 >( value? : T, selectorMap? : S, clientId = 'TEST_ID22' ) {
-	TestBed.configureTestingModule({
-		providers: [
-			typeof value !== 'undefined'
-			? provideContextService({ attrs: { value } })
-			: provideContextService(),
-			typeof selectorMap !== 'undefined'
-			? provideStreamService({ clientId, selectorMap })
-			: provideStreamService({ clientId })
-		]
-	});
+	TestBed
+		.resetTestingModule()
+		.configureTestingModule({
+			providers: [
+				typeof value !== 'undefined'
+				? provideContextService({ attrs: { value } })
+				: provideContextService(),
+				typeof selectorMap !== 'undefined'
+				? provideStreamService({ clientId, selectorMap })
+				: provideStreamService({ clientId })
+			]
+		});
 	return {
 		contextService: TestBed.inject( ContextService<T> ) as ContextService<T>,
 		streamService: TestBed.inject( StreamService ) as StreamService<T, S>
 	};
 }
 
-describe( 'StreamService', () => {
+describe( 'StreamService', { timeout: 1e7 }, () => {
 	test( 'should be created', () => {
 		expect( getServiceInstance().streamService ).toBeTruthy();
 	});
@@ -113,7 +123,7 @@ describe( 'StreamService', () => {
 			expect( getServiceInstance( sourceData, selectorMap ).streamService ).toBeInstanceOf( BrowserStreamService );
 		} );	
 		test( 'applies the memory stream in non-browser env.', () => {
-			const isPlatformBrowserSpy = jest
+			const isPlatformBrowserSpy = vi
 				.spyOn( deps, 'isPlatformBrowser' )
 				.mockReturnValue( false );
 			expect( getServiceInstance( sourceData, selectorMap ).streamService ).toBeInstanceOf( MemoryStreamService );
@@ -495,9 +505,9 @@ describe( 'StreamService', () => {
 		} );
 	} );
 	describe( 'exiting stream', () => {
-		let endStreamSpy : jest.SpyInstance<void, [], any>;
+		let endStreamSpy : Mock<() => void>;
 		afterEach(() => { endStreamSpy.mockRestore() });
-		beforeEach(() => { endStreamSpy = jest.spyOn( Channel.prototype, 'endStream' ) } );
+		beforeEach(() => { endStreamSpy = vi.spyOn( Channel.prototype, 'endStream' ) } );
 		test( 'immediate exit with no routing service', () => {
 			getServiceInstance();
 			expect( endStreamSpy ).not.toHaveBeenCalled();

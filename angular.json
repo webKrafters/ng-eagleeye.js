@@ -27,7 +27,17 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/npm-pkg/tsconfig.spec.json"
+            "coverage": true,
+            "coverageExclude": [
+              "lib/index.ts"
+            ],
+            "coverageReporters": [
+              "text",
+              "html",
+              "lcov"
+            ],
+            "tsConfig": "projects/npm-pkg/tsconfig.spec.json",
+            "watch": false
           }
         }
       }
