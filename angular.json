@@ -34,11 +34,10 @@
             "coverageReporters": [
               "text", "html", [
                 "lcov", {
-                  "outputFile": "custom-reports/coveralls-coverage.info"
+                  "outputFile": "coverage/npm-pkg/lcov.info"
                 }
               ]
             ],
-            "reportsDirectory": "custom-reports",
             "tsConfig": "projects/npm-pkg/tsconfig.spec.json",
             "watch": false
           }
