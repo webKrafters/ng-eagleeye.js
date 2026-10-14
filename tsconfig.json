@@ -27,12 +27,9 @@
     "strictTemplates": true
   },
   "files": [],
-  "references": [
-    {
-      "path": "./projects/npm-pkg/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/npm-pkg/tsconfig.spec.json"
-    }
-  ]
+  "references": [{
+    "path": "./projects/npm-pkg/tsconfig.lib.json"
+  }, {
+    "path": "./projects/npm-pkg/tsconfig.spec.json"
+  }]
 }

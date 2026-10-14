@@ -25,13 +25,6 @@ import {
 import createSourceData, { SourceData } from './test-artifacts/data/create-state-obj';
 import { ChannelRegistry } from '@webkrafters/eagleeye.channels.repository';
 
- beforeEach(() => { vi.useFakeTimers() });
-
-afterEach(() => {
-	vi.clearAllMocks();
-	vi.useRealTimers();
-});
-
 type ServiceArgs0<T extends State> = ProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
 type ServiceArgs1<T extends State> = RawProviderProps<T> & { ref? : ContextServiceConfig<T>[ "ref" ] };
 
