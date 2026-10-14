@@ -27,6 +27,9 @@ jobs:
       - run: npm install --legacy-peer-deps
       - run: npm test
 
+      - name: List Files (Debug)
+        run: ls -R
+
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         with:
