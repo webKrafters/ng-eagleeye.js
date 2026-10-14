@@ -32,9 +32,11 @@
               "lib/index.ts"
             ],
             "coverageReporters": [
-              "text",
-              "html",
-              "lcov"
+              "text", "html", [
+                "lcov", {
+                  "outputFile": "./coverage/lcov.info"
+                }
+              ]
             ],
             "tsConfig": "projects/npm-pkg/tsconfig.spec.json",
             "watch": false
