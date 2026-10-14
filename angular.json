@@ -38,6 +38,7 @@
                 }
               ]
             ],
+            "reportsDirectory": "custom-reports",
             "tsConfig": "projects/npm-pkg/tsconfig.spec.json",
             "watch": false
           }
