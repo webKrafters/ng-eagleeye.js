@@ -34,7 +34,7 @@
             "coverageReporters": [
               "text", "html", [
                 "lcov", {
-                  "outputFile": "./coverage/lcov.info"
+                  "outputFile": "custom-reports/coveralls-coverage.info"
                 }
               ]
             ],

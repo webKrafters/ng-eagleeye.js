@@ -27,6 +27,8 @@ jobs:
       - run: npm install --legacy-peer-deps
       - run: npm test
 
-      - uses: coverallsapp/github-action@master
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./custom-reports/coveralls-coverage.info
